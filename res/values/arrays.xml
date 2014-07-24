@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="travel_phrase_provider">
+        <item>@string/checking_passport</item>
+        <item>@string/verifying_visa</item>
+        <item>@string/exchanging_currency</item>
+        <item>@string/packing_ac_adapter</item>
+        <item>@string/buying_dictionary</item>
+        <item>@string/learning_local_customs</item>
+        <item>@string/booking_accommodations</item>
+        <item>@string/buying_plane_tickets</item>
+        <item>@string/planning_transportation</item>
+        <item>@string/checking_travel_warnings</item>
+        <item>@string/planning_itinerary</item>
+        <item>@string/purchasing_travel_insurance</item>
+        <item>@string/checking_luggage_weight</item>
+        <item>@string/packing_camera</item>
+        <item>@string/buying_map</item>
+    </string-array>
+
+</resources>

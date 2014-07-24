@@ -1,0 +1,30 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="MyAppTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:ratingBarStyleIndicator">@style/RatingBarBigAppTheme</item>
+    </style>
+
+    <style name="RatingBarBigAppTheme" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+        <item name="android:progressDrawable">@drawable/apptheme_ratingbar_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/apptheme_ratingbar_holo_light</item>
+    </style>
+
+</resources>

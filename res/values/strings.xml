@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Phone Tourist</string>
+    <string name="action_settings">Settings</string>
+    <string name="start">START</string>
+    <string name="tour">TOUR</string>
+
+    <!-- A light Holo shade of blue -->
+    <string name="holo_blue_light">ff33b5e5</string>
+
+    <!-- A light Holo shade of red -->
+    <string name="holo_red_light">ffff4444</string>
+
+    <!-- A light Holo shade of orange -->
+    <string name="holo_orange_light">ffffbb33</string>
+
+    <!-- A light Holo shade of green -->
+    <string name="holo_green_light">ff99cc00</string>
+
+    <!-- A light Holo shade of purple -->
+    <string name="holo_purple_light">ffaa66cc</string>
+    <string name="close_by">Close by</string>
+    <string name="far_away">Far away</string>
+    <string name="whole_world">Whole world</string>
+    <string name="loading">LOADING</string>
+    <string name="travel_distance">Travel distance</string>
+
+    <!-- Travel Phrases -->
+    <string name="checking_passport">Checking Passport</string>
+    <string name="verifying_visa">Verifying Visa</string>
+    <string name="exchanging_currency">Exchanging currency</string>
+    <string name="packing_ac_adapter">Packing AC adapter</string>
+    <string name="buying_dictionary">Buying dictionary</string>
+    <string name="learning_local_customs">Learning local customs</string>
+    <string name="booking_accommodations">Booking accommodations</string>
+    <string name="buying_plane_tickets">Buying plane tickets</string>
+    <string name="planning_transportation">Planning transportation</string>
+    <string name="checking_travel_warnings">Checking travel warnings</string>
+    <string name="planning_itinerary">Planning itinerary</string>
+    <string name="purchasing_travel_insurance">Purchasing travel insurance</string>
+    <string name="checking_luggage_weight">Checking luggage weight</string>
+    <string name="packing_camera">Packing camera</string>
+    <string name="buying_map">Buying map</string>
+    
+    <string name="instructions_title"><u>Instructions</u></string>
+    <string name="instruction1">| Choose the direction you want to travel</string>
+    <string name="instruction2">| Tap &amp; Hold the Big Blue Button</string>
+    <string name="instruction3">| Enjoy the Tour!</string>
+    <string name="address">Address</string>
+    <string name="rating"><b>Rating</b> (%1$s)</string>
+    <string name="distance">Distance</string>
+    <string name="duration">Duration</string>
+    <string name="phone">Phone</string>
+
+</resources>
