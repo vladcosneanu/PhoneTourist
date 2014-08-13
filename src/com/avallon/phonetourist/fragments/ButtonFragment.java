@@ -376,34 +376,31 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     }
     
     public void onSensorChanged(float bearing) {
-        float difference = bearing - this.bearing;
-        if (difference > 3 || difference < -3) {
-            if (customCompassArrows != null && !compassAnimationRunning) {
-                compassAnimationRunning = true;
-                Animation animation = new RotateAnimation(-this.bearing, -bearing, customCompassArrowsWidth/2, customCompassArrowsHeight/2);
-                animation.setDuration(33);
-                animation.setFillEnabled(true);
-                animation.setFillAfter(true);
-                animation.setInterpolator(new AccelerateDecelerateInterpolator());
-                animation.setRepeatCount(0);
-                animation.setAnimationListener(new AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        compassAnimationRunning = true;
-                    }
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                        
-                    }
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        compassAnimationRunning = false;
-                    }
-                });
-                customCompassArrows.startAnimation(animation);
-            }
-            this.bearing = bearing;
+        if (customCompassArrows != null && !compassAnimationRunning) {
+            compassAnimationRunning = true;
+            Animation animation = new RotateAnimation(-this.bearing, -bearing, customCompassArrowsWidth/2, customCompassArrowsHeight/2);
+            animation.setDuration(33);
+            animation.setFillEnabled(true);
+            animation.setFillAfter(true);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setRepeatCount(0);
+            animation.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    compassAnimationRunning = true;
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    compassAnimationRunning = false;
+                }
+            });
+            customCompassArrows.startAnimation(animation);
         }
+        this.bearing = bearing;
     }
 
     @Override
