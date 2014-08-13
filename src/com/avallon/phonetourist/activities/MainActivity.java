@@ -94,14 +94,12 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
     @Override
     public final void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-//            mGravity = Utils.lowPass(event.values.clone(), mGravity);
             mGravity[0] = event.values[0] * accelFilteringFactor + mGravity[0] * (1.0f - accelFilteringFactor);
             mGravity[1] = event.values[1] * accelFilteringFactor + mGravity[1] * (1.0f - accelFilteringFactor);
             mGravity[2] = event.values[2] * accelFilteringFactor + mGravity[2] * (1.0f - accelFilteringFactor);
         }
 
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-//            mGeomagnetic = Utils.lowPass(event.values.clone(), mGeomagnetic);
             mGeomagnetic[0] = event.values[0] * magFilteringFactor + mGeomagnetic[0] * (1.0f - magFilteringFactor);
             mGeomagnetic[1] = event.values[1] * magFilteringFactor + mGeomagnetic[1] * (1.0f - magFilteringFactor);
             mGeomagnetic[2] = event.values[2] * magFilteringFactor + mGeomagnetic[2] * (1.0f - magFilteringFactor);
@@ -117,7 +115,9 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
                 
                 float azimuthInRadians = orientation[0];
                 float azimuthInDegress = (float) (Math.toDegrees(azimuthInRadians) + 360) % 360;
-                buttonFragment.onSensorChanged(azimuthInDegress);
+                if (!buttonFragment.isCompassAnimationRunning()) {
+                    buttonFragment.onSensorChanged(azimuthInDegress);
+                }
             }
         }
     }
@@ -137,8 +137,8 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
         lftBroadcastReceiver = new LocationBroadcastReceiver();
         registerReceiver(lftBroadcastReceiver, lftIntentFilter);
 
-        mSensorManager.registerListener(this, mSensorMagnetic, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, mSensorAcceleration, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mSensorMagnetic, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mSensorAcceleration, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override

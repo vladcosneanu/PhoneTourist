@@ -32,11 +32,7 @@ public class CustomButton extends View {
     private Paint paint5 = new Paint();
     private Path path5 = new Path();
     private Paint paint6 = new Paint();
-    private Path path6 = new Path();
     private Paint paint7 = new Paint();
-    private Path path7 = new Path();
-    private Path path8 = new Path();
-    private Path path9 = new Path();
     private Paint textPaint = new Paint();
     private Camera camera = new Camera();
     private Matrix mMatrix = new Matrix();;
@@ -51,7 +47,6 @@ public class CustomButton extends View {
     private int colorInterpolated = 0;
     private int colorFrom = R.string.holo_blue_light;
     private int colorTo = R.string.holo_green_light;
-    private float bearing = 0;
 
     public CustomButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -152,38 +147,6 @@ public class CustomButton extends View {
         canvas.drawPath(path4, paint4);
         canvas.drawPath(path5, paint5);
         canvas.drawPath(path, paint);
-
-        if (!buttonPressed) {
-            // add cardinal arrows
-            margin = width * 8 / 100;
-            canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.rotate(-bearing, width / 2, height / 2);
-            path6.addArc(new RectF((width - height) / 2 + margin, margin, width - (width - height) / 2 - margin, height - margin), -99, 18);
-            path6.lineTo(width / 2, Math.round(width * 0.5 / 100));
-            canvas.drawPath(path6, paint6);
-    
-            textSize = width * 4 / 100;
-            textPaint.setTextSize(textSize);
-            canvas.drawText("N", width / 2, width * 7 / 100, textPaint);
-    
-            path7.addArc(new RectF((width - height) / 2 + margin, margin, width - (width - height) / 2 - margin, height - margin), -3, 6);
-            path7.lineTo(width - Math.round(width * 4 / 100), height / 2);
-            canvas.drawPath(path7, paint7);
-    
-            path8.addArc(new RectF((width - height) / 2 + margin, margin, width - (width - height) / 2 - margin, height - margin), 85, 10);
-            path8.lineTo(width / 2, height - Math.round(width * 3 / 100));
-            canvas.drawPath(path8, paint7);
-    
-            textSize = width * 3 / 100;
-            textPaint.setTextSize(textSize);
-            canvas.drawText("S", width / 2, height - (width * 5 / 100), textPaint);
-    
-            path9.addArc(new RectF((width - height) / 2 + margin, margin, width - (width - height) / 2 - margin, height - margin), 177, 6);
-            path9.lineTo(Math.round(width * 4 / 100), height / 2);
-            canvas.drawPath(path9, paint7);
-    
-            canvas.restore();
-        }
     }
 
     @Override
@@ -375,18 +338,5 @@ public class CustomButton extends View {
 
     private int interpolate(int a, int b, float proportion) {
         return Math.round((a + ((b - a) * proportion)));
-    }
-
-    public void setBearing(float bearing) {
-        this.bearing = bearing;
-        invalidate();
-//        float difference = bearing - this.bearing;
-//        if (difference > 5) {
-//            this.bearing = bearing - (difference / 100);
-//            invalidate();
-//        } else if (difference < -5) {
-//            this.bearing = bearing + (difference / 100);
-//            invalidate();
-//        }
     }
 }

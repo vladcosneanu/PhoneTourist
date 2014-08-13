@@ -13,9 +13,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -26,6 +28,7 @@ import com.avallon.phonetourist.activities.MainActivity;
 import com.avallon.phonetourist.interfaces.CustomButtonAnimationListener;
 import com.avallon.phonetourist.items.Coordinate;
 import com.avallon.phonetourist.items.CustomButton;
+import com.avallon.phonetourist.items.CustomCompassArrows;
 import com.avallon.phonetourist.requests.RequestLandmark;
 import com.avallon.phonetourist.utils.PreferenceHelper;
 import com.avallon.phonetourist.utils.Utils;
@@ -34,6 +37,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
 
     private View mView;
     private CustomButton customButton;
+    private CustomCompassArrows customCompassArrows;
     private float bearing;
     private float earthRadius = 6371f;
     private double landmarkLat;
@@ -57,6 +61,11 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private TextView instruction2Text;
     private TextView instruction3Text;
     private Typeface customFont;
+    
+    private static int customCompassArrowsWidth;
+    private static int customCompassArrowsHeight;
+    
+    private boolean compassAnimationRunning = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +79,11 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         customButton = (CustomButton) mView.findViewById(R.id.custom_button);
         customButton.setCustomButtonAnimationListener(this);
         customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
+        
+        customCompassArrows = (CustomCompassArrows) mView.findViewById(R.id.custom_compass_arrows);
+        customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
+        
+        setCompassArrowsMeasurements();
 
         distanceButtonsContainer = mView.findViewById(R.id.distance_buttons_container);
         distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up)));
@@ -197,6 +211,8 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out)));
+                    
                     ((MainActivity) getActivity()).setIsLoading(true);
                     ((MainActivity) getActivity()).clearLandmarks();
                     
@@ -355,10 +371,38 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         }, 1000, 2000);
     }
 
+    public boolean isCompassAnimationRunning() {
+        return compassAnimationRunning;
+    }
+    
     public void onSensorChanged(float bearing) {
-        this.bearing = bearing;
-        if (customButton != null) {
-            customButton.setBearing(bearing);
+        float difference = bearing - this.bearing;
+        if (difference > 3 || difference < -3) {
+            if (customCompassArrows != null && !compassAnimationRunning) {
+                compassAnimationRunning = true;
+                Animation animation = new RotateAnimation(-this.bearing, -bearing, customCompassArrowsWidth/2, customCompassArrowsHeight/2);
+                animation.setDuration(33);
+                animation.setFillEnabled(true);
+                animation.setFillAfter(true);
+                animation.setInterpolator(new AccelerateDecelerateInterpolator());
+                animation.setRepeatCount(0);
+                animation.setAnimationListener(new AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        compassAnimationRunning = true;
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                        
+                    }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        compassAnimationRunning = false;
+                    }
+                });
+                customCompassArrows.startAnimation(animation);
+            }
+            this.bearing = bearing;
         }
     }
 
@@ -407,5 +451,24 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         farAwayButton.setTextColor(getResources().getColor(R.color.text_color_grey));
         wholeWorldButton.setBackgroundResource(R.drawable.button_right_selected);
         wholeWorldButton.setTextColor(getResources().getColor(android.R.color.white));
+    }
+    
+    private void setCompassArrowsMeasurements() {
+        if (customCompassArrows != null) {
+            customCompassArrows.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+                @SuppressLint("NewApi")
+                @SuppressWarnings("deprecation")
+                @Override
+                public void onGlobalLayout() {
+                    customCompassArrowsWidth = customCompassArrows.getWidth();
+                    customCompassArrowsHeight = customCompassArrows.getHeight();
+                    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        customCompassArrows.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        customCompassArrows.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
     }
 }
