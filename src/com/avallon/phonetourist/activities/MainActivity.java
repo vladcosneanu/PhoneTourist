@@ -45,8 +45,6 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 	// private Sensor mSensorMagnetic;
 	// private Sensor mSensorAcceleration;
 	private Sensor mSensorRotation;
-	private float[] orientationVals = new float[3];
-	private float[] mRotationMatrix = new float[16];
 	private float[] mGravity = new float[3];
 	private float[] mGeomagnetic = new float[3];
 	private LocationBroadcastReceiver lftBroadcastReceiver;
@@ -56,13 +54,7 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 	private LandmarkFragment landmarkFragment;
 	private LandmarkDetails landmarkDetails;
 	private boolean isLoading = false;
-
-	/**
-	 * The lower this is, the greater the preference which is given to previous
-	 * values. (slows change)
-	 */
-	private static final float filteringFactor = 1f;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -126,21 +118,7 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 //		}
 
 		if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-			SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
-			float[] currentVals = new float[3];
-			float[] currentValsDegrees = new float[3];
-			SensorManager.getOrientation(mRotationMatrix, currentVals);
-			currentValsDegrees[0] = (float) (Math.toDegrees(currentVals[0]) + 360) % 360;
-			currentValsDegrees[1] = (float) (Math.toDegrees(currentVals[1]) + 360) % 360;
-			currentValsDegrees[2] = (float) (Math.toDegrees(currentVals[2]) + 360) % 360;
-			
-			orientationVals[0] = currentValsDegrees[0] * filteringFactor + orientationVals[0] * (1.0f - filteringFactor);
-			orientationVals[1] = currentValsDegrees[1] * filteringFactor + orientationVals[1] * (1.0f - filteringFactor);
-			orientationVals[2] = currentValsDegrees[2] * filteringFactor + orientationVals[2] * (1.0f - filteringFactor);
-			
-			if (!buttonFragment.isCompassAnimationRunning()) {
-				buttonFragment.onSensorChanged(orientationVals[0]);
-			}
+			buttonFragment.onSensorChanged(event);
 		}
 	}
 

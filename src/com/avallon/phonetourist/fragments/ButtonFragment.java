@@ -5,6 +5,8 @@ import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,11 +15,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -65,7 +65,14 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private static int customCompassArrowsWidth;
     private static int customCompassArrowsHeight;
     
-    private boolean compassAnimationRunning = false;
+    private float[] orientationVals = new float[3];
+    private float[] mRotationMatrix = new float[16];
+    
+    /**
+     * The lower this is, the greater the preference which is given to previous
+     * values. (slows change)
+     */
+    private static final float filteringFactor = 1f;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -371,52 +378,42 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         }, 1000, 2000);
     }
 
-    public boolean isCompassAnimationRunning() {
-        return compassAnimationRunning;
-    }
-    
-    public void onSensorChanged(float bearing) {
-        if (customCompassArrows != null && !compassAnimationRunning) {
+    public void onSensorChanged(SensorEvent event) {
+        if (customCompassArrows != null) {
+            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+            float[] currentVals = new float[3];
+            float[] currentValsDegrees = new float[3];
+            SensorManager.getOrientation(mRotationMatrix, currentVals);
+            currentValsDegrees[0] = (float) (Math.toDegrees(currentVals[0]) + 360) % 360;
+            currentValsDegrees[1] = (float) (Math.toDegrees(currentVals[1]) + 360) % 360;
+            currentValsDegrees[2] = (float) (Math.toDegrees(currentVals[2]) + 360) % 360;
+            
+            orientationVals[0] = currentValsDegrees[0] * filteringFactor + orientationVals[0] * (1.0f - filteringFactor);
+            orientationVals[1] = currentValsDegrees[1] * filteringFactor + orientationVals[1] * (1.0f - filteringFactor);
+            orientationVals[2] = currentValsDegrees[2] * filteringFactor + orientationVals[2] * (1.0f - filteringFactor);
+            
+            float receivedBearing = orientationVals[0];
+            
             if (this.bearing == 0) {
-                this.bearing = bearing;
+                this.bearing = receivedBearing;
             }
             
-            compassAnimationRunning = true;
             boolean degreesAdded = false;
-            if (this.bearing - bearing > 90) {
-                bearing += 360;
+            if (this.bearing - receivedBearing > 90) {
+                receivedBearing += 360;
                 degreesAdded = true;
-            } else if (bearing - this.bearing > 90) {
+            } else if (receivedBearing - this.bearing > 90) {
                 this.bearing += 360;
             }
             
-            Animation animation = new RotateAnimation(-this.bearing, -bearing, customCompassArrowsWidth/2, customCompassArrowsHeight/2);
-            animation.setDuration(33);
-            animation.setFillEnabled(true);
-            animation.setFillAfter(true);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            animation.setRepeatCount(0);
-            animation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    compassAnimationRunning = true;
-                }
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    
-                }
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    compassAnimationRunning = false;
-                }
-            });
-            customCompassArrows.startAnimation(animation);
-            
+            customCompassArrows.setPivotX(customCompassArrowsWidth/2);
+            customCompassArrows.setPivotY(customCompassArrowsHeight/2);
+            customCompassArrows.setRotation(-bearing);
             if (degreesAdded) {
-                bearing -= 360;
+                receivedBearing -= 360;
             }
             
-            this.bearing = bearing;
+            this.bearing = receivedBearing;
         }
     }
 
