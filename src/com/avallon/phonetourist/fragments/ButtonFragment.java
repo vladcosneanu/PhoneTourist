@@ -377,7 +377,19 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     
     public void onSensorChanged(float bearing) {
         if (customCompassArrows != null && !compassAnimationRunning) {
+            if (this.bearing == 0) {
+                this.bearing = bearing;
+            }
+            
             compassAnimationRunning = true;
+            boolean degreesAdded = false;
+            if (this.bearing - bearing > 90) {
+                bearing += 360;
+                degreesAdded = true;
+            } else if (bearing - this.bearing > 90) {
+                this.bearing += 360;
+            }
+            
             Animation animation = new RotateAnimation(-this.bearing, -bearing, customCompassArrowsWidth/2, customCompassArrowsHeight/2);
             animation.setDuration(33);
             animation.setFillEnabled(true);
@@ -399,8 +411,13 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                 }
             });
             customCompassArrows.startAnimation(animation);
+            
+            if (degreesAdded) {
+                bearing -= 360;
+            }
+            
+            this.bearing = bearing;
         }
-        this.bearing = bearing;
     }
 
     @Override

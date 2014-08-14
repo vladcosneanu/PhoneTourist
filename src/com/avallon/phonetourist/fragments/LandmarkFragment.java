@@ -90,16 +90,18 @@ public class LandmarkFragment extends Fragment {
         landmarkRatingText.setText(String.format(getString(R.string.rating), String.valueOf(landmarkDetails.getRating())));
         
         landmarkTypes = (TextView) mView.findViewById(R.id.landmark_types);
-        String typesValue = "(";
-        for (int i = 0; i < landmarkDetails.getTypes().size(); i++) {
-            if (i == 0) {
-                typesValue += landmarkDetails.getTypes().get(i);
-            } else {
-                typesValue += ", " + landmarkDetails.getTypes().get(i);
+        if (landmarkDetails.getTypes() != null && landmarkDetails.getTypes().size() > 0) { 
+            String typesValue = "(";
+            for (int i = 0; i < landmarkDetails.getTypes().size(); i++) {
+                if (i == 0) {
+                    typesValue += landmarkDetails.getTypes().get(i);
+                } else {
+                    typesValue += ", " + landmarkDetails.getTypes().get(i);
+                }
             }
+            typesValue += ")";
+            landmarkTypes.setText(typesValue);
         }
-        typesValue += ")";
-        landmarkTypes.setText(typesValue);
         
         landmarkDistance = (TextView) mView.findViewById(R.id.landmark_distance);
         landmarkDistance.setText(landmarkDetails.getDistanceText());
