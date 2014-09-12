@@ -31,7 +31,7 @@
     <color name="holo_purple_dark">#ff9933cc</color>
     
     <color name="grey_gradient_start">#fff2f2f2</color>
-    <color name="grey_gradient_end">#ffcbcbcb</color>
+    <color name="grey_gradient_end">#ffcfcfcf</color>
     <color name="text_color_dark">#ff242424</color>
     <color name="text_color_grey">#ff7f7f7f</color>
     <color name="app_background">#ffeeeeee</color>

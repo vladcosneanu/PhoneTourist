@@ -165,7 +165,8 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 			if (json.getString("status").equals("OK")) {
 				JSONArray rows = json.getJSONArray("results");
 				for (int i = 0; i < rows.length(); i++) {
-					if (rows.getJSONObject(i).has("photos") && rows.getJSONObject(i).has("rating")) {
+//					if (rows.getJSONObject(i).has("photos") && rows.getJSONObject(i).has("rating")) {
+				    if (rows.getJSONObject(i).has("photos")) {
 						Landmark landmark = new Landmark(rows.getJSONObject(i));
 						landmarks.add(landmark);
 					}
@@ -204,7 +205,7 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 					requestLandmarkDetails.execute(new String[] {});
 				} else {
 					// no landmarks found
-
+				    
 				}
 			}
 		} catch (JSONException e) {

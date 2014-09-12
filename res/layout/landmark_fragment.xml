@@ -5,7 +5,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" >
 
         <LinearLayout
             android:id="@+id/landmark_name_layout"
@@ -48,7 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rating_background"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:visibility="gone" >
 
                 <TextView
                     android:id="@+id/landmark_rating_text"
@@ -71,6 +74,23 @@
                     android:max="5"
                     android:numStars="5"
                     android:stepSize="0.1" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/landmark_no_rating_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rating_background" >
+
+                <TextView
+                    android:id="@+id/landmark_not_rated_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/not_yet_rated"
+                    android:textColor="@color/text_color_grey"
+                    android:textSize="14sp" />
             </RelativeLayout>
         </LinearLayout>
 
@@ -188,28 +208,49 @@
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/landmark_address_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/address_bg"
-                android:orientation="vertical" >
+                android:background="@drawable/address_layout_bg"
+                android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/landmark_address_button"
+                    android:layout_width="0dip"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="@string/address"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:layout_weight="3"
+                    android:background="@drawable/address_bg"
+                    android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/landmark_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/address"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/landmark_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white" />
+
+                <ImageButton
+                    android:id="@+id/Landmark_directions_button"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/directions_bg"
+                    android:src="@drawable/ic_action_directions" />
             </LinearLayout>
 
             <FrameLayout
@@ -227,11 +268,6 @@
                     android:background="@drawable/map_rounded_background"
                     android:orientation="vertical" />
             </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
         </LinearLayout>
     </RelativeLayout>
 

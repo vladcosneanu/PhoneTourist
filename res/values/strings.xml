@@ -52,5 +52,6 @@
     <string name="distance">Distance</string>
     <string name="duration">Duration</string>
     <string name="phone">Phone</string>
+    <string name="not_yet_rated">Not yet rated</string>
 
 </resources>

@@ -37,6 +37,8 @@ public class LandmarkFragment extends Fragment {
     private TextView landmarkPhone;
     private View landmarkAddressButton;
     private CameraPosition.Builder currentPosition;
+    private View landmarkRatingContainer;
+    private View landmarkNoRatingContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class LandmarkFragment extends Fragment {
                 map = mapFragment.getMap();
                 if (map != null) {
                     map.setMyLocationEnabled(true);
+                    map.getUiSettings().setAllGesturesEnabled(false);
 
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(new LatLng(landmarkDetails.getLatitude(), landmarkDetails.getLongitude()));
@@ -82,12 +85,22 @@ public class LandmarkFragment extends Fragment {
 
         landmarkAddress = (TextView) mView.findViewById(R.id.landmark_address);
         landmarkAddress.setText(landmarkDetails.getFormattedAddress());
+        
+        landmarkRatingContainer = mView.findViewById(R.id.landmark_rating_container);
+        landmarkNoRatingContainer = mView.findViewById(R.id.landmark_no_rating_container);
 
-        ratingBar = (RatingBar) mView.findViewById(R.id.landmark_rating_value);
-        ratingBar.setRating((float) landmarkDetails.getRating());
+        if (landmarkDetails.getRating() != 0) {
+            landmarkRatingContainer.setVisibility(View.VISIBLE);
+            landmarkNoRatingContainer.setVisibility(View.GONE);
+            ratingBar = (RatingBar) mView.findViewById(R.id.landmark_rating_value);
+            ratingBar.setRating((float) landmarkDetails.getRating());
 
-        landmarkRatingText = (TextView) mView.findViewById(R.id.landmark_rating_text);
-        landmarkRatingText.setText(String.format(getString(R.string.rating), String.valueOf(landmarkDetails.getRating())));
+            landmarkRatingText = (TextView) mView.findViewById(R.id.landmark_rating_text);
+            landmarkRatingText.setText(String.format(getString(R.string.rating), String.valueOf(landmarkDetails.getRating())));
+        } else {
+            landmarkRatingContainer.setVisibility(View.GONE);
+            landmarkNoRatingContainer.setVisibility(View.VISIBLE);
+        }
         
         landmarkTypes = (TextView) mView.findViewById(R.id.landmark_types);
         if (landmarkDetails.getTypes() != null && landmarkDetails.getTypes().size() > 0) { 
@@ -101,6 +114,8 @@ public class LandmarkFragment extends Fragment {
             }
             typesValue += ")";
             landmarkTypes.setText(typesValue);
+        } else {
+            landmarkTypes.setVisibility(View.GONE);
         }
         
         landmarkDistance = (TextView) mView.findViewById(R.id.landmark_distance);

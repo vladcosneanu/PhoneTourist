@@ -5,13 +5,13 @@
     <corners
         android:bottomLeftRadius="0dp"
         android:bottomRightRadius="0dp"
-        android:topLeftRadius="10dp"
-        android:topRightRadius="0dp" />
+        android:topLeftRadius="0dp"
+        android:topRightRadius="10dp" />
 
     <gradient
         android:angle="-90"
-        android:endColor="@color/holo_green_dark"
-        android:startColor="@color/holo_green_light"
+        android:endColor="@color/holo_green_light"
+        android:startColor="@color/holo_green_dark"
         android:type="linear" />
 
     <padding
