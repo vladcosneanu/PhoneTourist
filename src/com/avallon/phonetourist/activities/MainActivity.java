@@ -251,6 +251,22 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 			e.printStackTrace();
 		}
 	}
+	
+	public void onLandmarkDirectionsReceived(JSONObject json) {
+        try {
+            String status = json.getString("status");
+            if (status.equals("OK")) {
+                if (!landmarkFragment.isAdded()) {
+                    return;
+                } else {
+                    landmarkFragment.onLandmarkDirectionsReceived(json);
+                }
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	}
 
 	@Override
 	public void onBackPressed() {

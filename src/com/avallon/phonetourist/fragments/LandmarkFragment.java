@@ -1,5 +1,12 @@
 package com.avallon.phonetourist.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -7,19 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.avallon.phonetourist.R;
 import com.avallon.phonetourist.activities.MainActivity;
 import com.avallon.phonetourist.items.LandmarkDetails;
+import com.avallon.phonetourist.requests.RequestLandmarkDirections;
+import com.avallon.phonetourist.utils.MapHelper;
+import com.avallon.phonetourist.utils.Utils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class LandmarkFragment extends Fragment {
 
@@ -39,6 +52,9 @@ public class LandmarkFragment extends Fragment {
     private CameraPosition.Builder currentPosition;
     private View landmarkRatingContainer;
     private View landmarkNoRatingContainer;
+    private ImageButton landmarkDirectionsButton;
+    private List<LatLng> allLocations;
+    private Marker marker;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +79,7 @@ public class LandmarkFragment extends Fragment {
                     markerOptions.title(landmarkDetails.getName());
                     markerOptions.draggable(false);
                     markerOptions.snippet(landmarkDetails.getVicinity());
-                    Marker marker = map.addMarker(markerOptions);
+                    marker = map.addMarker(markerOptions);
 
                     marker.showInfoWindow();
 
@@ -85,7 +101,7 @@ public class LandmarkFragment extends Fragment {
 
         landmarkAddress = (TextView) mView.findViewById(R.id.landmark_address);
         landmarkAddress.setText(landmarkDetails.getFormattedAddress());
-        
+
         landmarkRatingContainer = mView.findViewById(R.id.landmark_rating_container);
         landmarkNoRatingContainer = mView.findViewById(R.id.landmark_no_rating_container);
 
@@ -101,9 +117,9 @@ public class LandmarkFragment extends Fragment {
             landmarkRatingContainer.setVisibility(View.GONE);
             landmarkNoRatingContainer.setVisibility(View.VISIBLE);
         }
-        
+
         landmarkTypes = (TextView) mView.findViewById(R.id.landmark_types);
-        if (landmarkDetails.getTypes() != null && landmarkDetails.getTypes().size() > 0) { 
+        if (landmarkDetails.getTypes() != null && landmarkDetails.getTypes().size() > 0) {
             String typesValue = "(";
             for (int i = 0; i < landmarkDetails.getTypes().size(); i++) {
                 if (i == 0) {
@@ -117,21 +133,90 @@ public class LandmarkFragment extends Fragment {
         } else {
             landmarkTypes.setVisibility(View.GONE);
         }
-        
+
         landmarkDistance = (TextView) mView.findViewById(R.id.landmark_distance);
         landmarkDistance.setText(landmarkDetails.getDistanceText());
-        
+
         landmarkDuration = (TextView) mView.findViewById(R.id.landmark_duration);
         landmarkDuration.setText(landmarkDetails.getDurationText());
-        
+
         landmarkPhone = (TextView) mView.findViewById(R.id.landmark_phone);
         landmarkPhone.setText(landmarkDetails.getInternationalPhoneNumber());
-        
+
         landmarkAddressButton = mView.findViewById(R.id.landmark_address_button);
         landmarkAddressButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPosition.build()));
+                
+                if (marker != null) {
+                    marker.showInfoWindow();
+                }
+            }
+        });
+
+        landmarkDirectionsButton = (ImageButton) mView.findViewById(R.id.landmark_directions_button);
+        landmarkDirectionsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allLocations != null && allLocations.size() > 0) {
+                    addLandmarkDirections();
+                } else {
+                    String currentLocationLatLng = Utils.getLocation().getLatitude() + "," + Utils.getLocation().getLongitude();
+                    String landmarkLocationLatLng = landmarkDetails.getLatitude() + "," + landmarkDetails.getLongitude();
+
+                    RequestLandmarkDirections requestLandmarkDirections = new RequestLandmarkDirections((MainActivity) getActivity(),
+                            currentLocationLatLng, landmarkLocationLatLng);
+                    requestLandmarkDirections.execute(new String[] {});
+                }
+            }
+        });
+    }
+
+    public void onLandmarkDirectionsReceived(JSONObject json) {
+        try {
+            allLocations = new ArrayList<LatLng>();
+
+            JSONArray routes = json.getJSONArray("routes");
+            JSONObject route = routes.getJSONObject(0);
+            JSONArray legs = route.getJSONArray("legs");
+
+            for (int i = 0; i < legs.length(); i++) {
+                JSONObject leg = new JSONObject(legs.get(i).toString());
+
+                JSONArray steps = leg.getJSONArray("steps");
+                for (int j = 0; j < steps.length(); j++) {
+                    JSONObject step = new JSONObject(steps.get(j).toString());
+
+                    JSONObject polylineObj = step.getJSONObject("polyline");
+                    String polyline = polylineObj.getString("points");
+                    List<LatLng> polyList = MapHelper.decodePoly(polyline);
+                    allLocations.addAll(polyList);
+                }
+            }
+
+            map.addPolyline(new PolylineOptions().addAll(allLocations).width(5).color(getResources().getColor(R.color.holo_blue_light)));
+
+            addLandmarkDirections();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    private void addLandmarkDirections() {
+        mapFragment.getView().post(new Runnable() {
+            @Override
+            public void run() {
+                if (allLocations.size() > 0) {
+                    final LatLngBounds.Builder bc = new LatLngBounds.Builder();
+                    
+                    for (int k = 0; k < allLocations.size(); k++) {
+                        bc.include(allLocations.get(k));
+                    }
+                    
+                    map.animateCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 100));
+                }
             }
         });
     }

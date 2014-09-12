@@ -245,12 +245,12 @@
                     android:background="@android:color/white" />
 
                 <ImageButton
-                    android:id="@+id/Landmark_directions_button"
+                    android:id="@+id/landmark_directions_button"
                     android:layout_width="0dip"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/directions_bg"
-                    android:src="@drawable/ic_action_directions" />
+                    android:src="@drawable/map_directions" />
             </LinearLayout>
 
             <FrameLayout
