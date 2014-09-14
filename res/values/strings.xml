@@ -43,6 +43,7 @@
     <string name="packing_camera">Packing camera</string>
     <string name="buying_map">Buying map</string>
     
+    <string name="splash_title">The World\nin your pocket</string>
     <string name="instructions_title"><u>Instructions</u></string>
     <string name="instruction1">| Choose the direction you want to travel</string>
     <string name="instruction2">| Tap &amp; Hold the Big Blue Button</string>
@@ -53,5 +54,9 @@
     <string name="duration">Duration</string>
     <string name="phone">Phone</string>
     <string name="not_yet_rated">Not yet rated</string>
+    
+    <string name="splash_duration">2000</string>
+    <string name="splash_button_move">600</string>
+    <string name="splash_duration_end">2600</string>
 
 </resources>

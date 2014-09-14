@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.avallon.phonetourist.PhoneTouristApplication;
 import com.avallon.phonetourist.R;
 import com.avallon.phonetourist.activities.MainActivity;
 import com.avallon.phonetourist.interfaces.CustomButtonAnimationListener;
@@ -60,6 +61,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private TextView instruction1Text;
     private TextView instruction2Text;
     private TextView instruction3Text;
+    private TextView splashTitleText;
     private Typeface customFont;
     
     private static int customCompassArrowsWidth;
@@ -85,15 +87,12 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     public void onViewCreated(View view, Bundle savedInstanceState) {
         customButton = (CustomButton) mView.findViewById(R.id.custom_button);
         customButton.setCustomButtonAnimationListener(this);
-        customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
         
         customCompassArrows = (CustomCompassArrows) mView.findViewById(R.id.custom_compass_arrows);
-        customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
         
         setCompassArrowsMeasurements();
 
         distanceButtonsContainer = mView.findViewById(R.id.distance_buttons_container);
-        distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up)));
 
         closeByButton = (Button) mView.findViewById(R.id.close_by_button);
         closeByButton.setOnClickListener(this);
@@ -114,8 +113,6 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         }
         
         instructionsContainer = mView.findViewById(R.id.instructions_container);
-        instructionsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down)));
-        
         customFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/a_little_sunshine.ttf");
         instructionsTitle = (TextView) mView.findViewById(R.id.instructions_title);
         instructionsTitle.setTypeface(customFont);
@@ -125,6 +122,29 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         instruction2Text.setTypeface(customFont);
         instruction3Text = (TextView) mView.findViewById(R.id.instruction3_text);
         instruction3Text.setTypeface(customFont);
+        splashTitleText = (TextView) mView.findViewById(R.id.splash_title_text);
+        splashTitleText.setTypeface(customFont);
+        
+        if (!PhoneTouristApplication.splashDisplayed) {
+        	// display the splash screen
+        	customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_button_down)));
+        	customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_delay)));
+        	customButton.setupForSplashScreen();
+			customButton.decolor();
+			
+			splashTitleText.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down_delay)));
+        	distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_delay)));
+        	instructionsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down_delay)));
+        	
+        	PhoneTouristApplication.splashDisplayed = true;
+        } else {
+        	// splash screen already displayed
+        	customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
+        	customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
+        	distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up)));
+        	instructionsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down)));
+        	splashTitleText.setVisibility(View.GONE);
+        }
     }
 
     private void getLocationInfo() {

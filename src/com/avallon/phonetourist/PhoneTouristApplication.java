@@ -8,6 +8,7 @@ import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 public class PhoneTouristApplication extends Application {
 
     private static PhoneTouristApplication singleton;
+    public static boolean splashDisplayed = false;
 
     public static PhoneTouristApplication getInstance() {
         return singleton;
