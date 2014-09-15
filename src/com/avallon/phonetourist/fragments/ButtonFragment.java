@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private Button closeByButton;
     private Button farAwayButton;
     private Button wholeWorldButton;
+    private ImageButton distanceSettingsButton;
     private View distanceButtonsContainer;
     private RelativeLayout wordCloudAbove;
     private RelativeLayout wordCloudBelow;
@@ -100,6 +102,8 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         farAwayButton.setOnClickListener(this);
         wholeWorldButton = (Button) mView.findViewById(R.id.whole_world_button);
         wholeWorldButton.setOnClickListener(this);
+        distanceSettingsButton = (ImageButton) mView.findViewById(R.id.distance_settings_button);
+        distanceSettingsButton.setOnClickListener(this);
         wordCloudAbove = (RelativeLayout) mView.findViewById(R.id.word_cloud_above);
         wordCloudBelow = (RelativeLayout) mView.findViewById(R.id.word_cloud_below);
 
@@ -465,6 +469,9 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         case R.id.whole_world_button:
             selectWholeWorld();
             PreferenceHelper.saveValue(getActivity(), PreferenceHelper.DISTANCE, PreferenceHelper.DISTANCE_WHOLE_WORLD);
+            break;
+        case R.id.distance_settings_button:
+            Log.d("Vlad", "aici");
             break;
         default:
             break;

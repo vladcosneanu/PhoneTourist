@@ -11,17 +11,31 @@
         android:layout_height="wrap_content"
         android:background="@drawable/travel_distance_bg"
         android:orientation="vertical"
-        android:visibility="invisible" >
+        android:visibility="visible" >
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/travel_distance_text_bg"
-            android:gravity="center"
-            android:text="@string/travel_distance"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:background="@drawable/travel_distance_text_bg" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/travel_distance"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/distance_settings_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_settings"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true" 
+                android:background="@drawable/distance_settings_bg"/>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
