@@ -127,22 +127,36 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         
         if (!PhoneTouristApplication.splashDisplayed) {
         	// display the splash screen
-        	customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_button_down)));
-        	customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_delay)));
+            Animation enterButtonDown = AnimationUtils.loadAnimation(getActivity(), R.anim.enter_button_down);
+            enterButtonDown.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    customButton.setNotInSplashScreen();
+                }
+            });
+            
+        	customButton.startAnimation(enterButtonDown);
+        	customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_delay));
         	customButton.setupForSplashScreen();
 			customButton.decolor();
 			
-			splashTitleText.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down_delay)));
-        	distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_delay)));
-        	instructionsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down_delay)));
+			splashTitleText.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down_delay));
+        	distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_delay));
+        	instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down_delay));
         	
         	PhoneTouristApplication.splashDisplayed = true;
         } else {
         	// splash screen already displayed
-        	customButton.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
-        	customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in)));
-        	distanceButtonsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up)));
-        	instructionsContainer.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down)));
+        	customButton.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
+        	customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
+        	distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up));
+        	instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down));
         	splashTitleText.setVisibility(View.GONE);
         }
     }

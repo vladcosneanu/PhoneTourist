@@ -58,7 +58,7 @@ public class LandmarkDetails {
             }
 
             landmarkReviews = new ArrayList<LandmarkReview>();
-            if (json.has("photos")) {
+            if (json.has("reviews")) {
                 JSONArray reviews = json.getJSONArray("reviews");
                 for (int i = 0; i < reviews.length(); i++) {
                     LandmarkReview landmarkReview = new LandmarkReview(reviews.getJSONObject(i));
