@@ -19,6 +19,7 @@
             android:background="@drawable/travel_distance_text_bg" >
 
             <TextView
+                android:id="@+id/travel_distance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -31,10 +32,10 @@
                 android:id="@+id/distance_settings_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_settings"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true" 
-                android:background="@drawable/distance_settings_bg"/>
+                android:background="@drawable/distance_settings_bg"
+                android:src="@drawable/ic_action_settings" />
         </RelativeLayout>
 
         <View

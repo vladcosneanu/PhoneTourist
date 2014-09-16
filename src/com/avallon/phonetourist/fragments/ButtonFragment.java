@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.avallon.phonetourist.PhoneTouristApplication;
 import com.avallon.phonetourist.R;
+import com.avallon.phonetourist.activities.DistanceSettingsActivity;
 import com.avallon.phonetourist.activities.MainActivity;
 import com.avallon.phonetourist.interfaces.CustomButtonAnimationListener;
 import com.avallon.phonetourist.items.Coordinate;
@@ -65,6 +67,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private TextView instruction3Text;
     private TextView splashTitleText;
     private Typeface customFont;
+    private TextView travelDistanceText;
     
     private static int customCompassArrowsWidth;
     private static int customCompassArrowsHeight;
@@ -106,16 +109,8 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         distanceSettingsButton.setOnClickListener(this);
         wordCloudAbove = (RelativeLayout) mView.findViewById(R.id.word_cloud_above);
         wordCloudBelow = (RelativeLayout) mView.findViewById(R.id.word_cloud_below);
+        travelDistanceText = (TextView) mView.findViewById(R.id.travel_distance_text);
 
-        String savedDistance = PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE);
-        if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
-            selectCloseBy();
-        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_FAR_AWAY)) {
-            selectFarAway();
-        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_WHOLE_WORLD)) {
-            selectWholeWorld();
-        }
-        
         instructionsContainer = mView.findViewById(R.id.instructions_container);
         customFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/a_little_sunshine.ttf");
         instructionsTitle = (TextView) mView.findViewById(R.id.instructions_title);
@@ -164,6 +159,22 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         	splashTitleText.setVisibility(View.GONE);
         }
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        String savedDistance = PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE);
+        if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
+            selectCloseBy();
+        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_FAR_AWAY)) {
+            selectFarAway();
+        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_WHOLE_WORLD)) {
+            selectWholeWorld();
+        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_CUSTOM)) {
+            selectCustomTravelDistance();
+        }
+    }
 
     private void getLocationInfo() {
         Coordinate location = Utils.getLocation();
@@ -176,11 +187,19 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         float distance = 0;
         String savedDistance = PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE);
         if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
+            // 0 - 150 km
             distance = Utils.getRandInt(50, 100);
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_FAR_AWAY)) {
-            distance = Utils.getRandInt(100, 2000);
+            // 150 - 2000 km
+            distance = Utils.getRandInt(200, 1950);
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_WHOLE_WORLD)) {
-            distance = Utils.getRandInt(50, 20000);
+            // 0 - 19950 km
+            distance = Utils.getRandInt(50, 19950);
+        } else if (savedDistance.equals(PreferenceHelper.DISTANCE_CUSTOM)) {
+            // custom distance
+            int minDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN)) - 50;
+            int maxDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX)) + 50;
+            distance = Utils.getRandInt(minDIstance, maxDIstance);
         }
         Log.d("Vlad", "distance: " + distance);
 
@@ -471,14 +490,20 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             PreferenceHelper.saveValue(getActivity(), PreferenceHelper.DISTANCE, PreferenceHelper.DISTANCE_WHOLE_WORLD);
             break;
         case R.id.distance_settings_button:
-            Log.d("Vlad", "aici");
+            openDistanceSettingsActivity();
             break;
         default:
             break;
         }
     }
+    
+    private void openDistanceSettingsActivity() {
+        Intent intent = new Intent(getActivity(), DistanceSettingsActivity.class);
+        startActivity(intent);
+    }
 
     private void selectCloseBy() {
+        travelDistanceText.setText(getString(R.string.travel_distance, "0-150 km"));
         closeByButton.setBackgroundResource(R.drawable.button_left_selected);
         closeByButton.setTextColor(getResources().getColor(android.R.color.white));
         farAwayButton.setBackgroundResource(R.drawable.button_center_unselected);
@@ -488,6 +513,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     }
 
     private void selectFarAway() {
+        travelDistanceText.setText(getString(R.string.travel_distance, "150-2,000 km"));
         closeByButton.setBackgroundResource(R.drawable.button_left_unselected);
         closeByButton.setTextColor(getResources().getColor(R.color.text_color_grey));
         farAwayButton.setBackgroundResource(R.drawable.button_center_selected);
@@ -497,12 +523,27 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     }
 
     private void selectWholeWorld() {
+        travelDistanceText.setText(getString(R.string.travel_distance, "0-20,000 km"));
         closeByButton.setBackgroundResource(R.drawable.button_left_unselected);
         closeByButton.setTextColor(getResources().getColor(R.color.text_color_grey));
         farAwayButton.setBackgroundResource(R.drawable.button_center_unselected);
         farAwayButton.setTextColor(getResources().getColor(R.color.text_color_grey));
         wholeWorldButton.setBackgroundResource(R.drawable.button_right_selected);
         wholeWorldButton.setTextColor(getResources().getColor(android.R.color.white));
+    }
+    
+    private void selectCustomTravelDistance() {
+        int minDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN)) - 50;
+        int maxDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX)) + 50;
+        
+        travelDistanceText.setText(getString(R.string.travel_distance, minDIstance + "-" + maxDIstance +" km"));
+        
+        closeByButton.setBackgroundResource(R.drawable.button_left_unselected);
+        closeByButton.setTextColor(getResources().getColor(R.color.text_color_grey));
+        farAwayButton.setBackgroundResource(R.drawable.button_center_unselected);
+        farAwayButton.setTextColor(getResources().getColor(R.color.text_color_grey));
+        wholeWorldButton.setBackgroundResource(R.drawable.button_right_unselected);
+        wholeWorldButton.setTextColor(getResources().getColor(R.color.text_color_grey));
     }
     
     private void setCompassArrowsMeasurements() {

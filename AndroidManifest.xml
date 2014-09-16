@@ -63,6 +63,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.avallon.phonetourist.activities.DistanceSettingsActivity"
+            android:theme="@style/MyHoloThemeDialog" >
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"

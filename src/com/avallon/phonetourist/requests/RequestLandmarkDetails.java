@@ -2,7 +2,6 @@ package com.avallon.phonetourist.requests;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;

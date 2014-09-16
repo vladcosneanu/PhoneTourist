@@ -13,6 +13,9 @@ public class PreferenceHelper {
     public static final String DISTANCE_CLOSE_BY = "DISTANCE_CLOSE_BY";
     public static final String DISTANCE_FAR_AWAY = "DISTANCE_FAR_AWAY";
     public static final String DISTANCE_WHOLE_WORLD = "DISTANCE_WHOLE_WORLD";
+    public static final String DISTANCE_CUSTOM = "DISTANCE_CUSTOM";
+    public static final String DISTANCE_CUSTOM_MIN = "DISTANCE_CUSTOM_MIN";
+    public static final String DISTANCE_CUSTOM_MAX = "DISTANCE_CUSTOM_MAX";
 
     public static void saveValue(Context context, String key, String value) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PHONE_TOURIST, Context.MODE_PRIVATE);

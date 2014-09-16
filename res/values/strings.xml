@@ -24,7 +24,7 @@
     <string name="far_away">Far away</string>
     <string name="whole_world">Whole world</string>
     <string name="loading">LOADING</string>
-    <string name="travel_distance">Travel distance</string>
+    <string name="travel_distance">Travel distance (%1$s)</string>
 
     <!-- Travel Phrases -->
     <string name="checking_passport">Checking Passport</string>
@@ -58,5 +58,8 @@
     <string name="splash_duration">2000</string>
     <string name="splash_button_move">600</string>
     <string name="splash_duration_end">2600</string>
+    <string name="select_travel_distance">Select a custom distance range for your trip</string>
+    <string name="from">From: %1$s km</string>
+    <string name="up_to">Up to: %1$s km</string>
 
 </resources>
