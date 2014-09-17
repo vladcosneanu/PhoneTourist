@@ -1,5 +1,7 @@
 package com.avallon.phonetourist.fragments;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -533,10 +535,13 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     }
     
     private void selectCustomTravelDistance() {
-        int minDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN)) - 50;
-        int maxDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX)) + 50;
+        int minDistance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN));
+        int maxDistance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX));
         
-        travelDistanceText.setText(getString(R.string.travel_distance, minDIstance + "-" + maxDIstance +" km"));
+        String minDistanceValue = Utils.formatInt(minDistance);
+        String maxDistanceValue = Utils.formatInt(maxDistance);
+        
+        travelDistanceText.setText(getString(R.string.travel_distance, minDistanceValue + "-" + maxDistanceValue +" km"));
         
         closeByButton.setBackgroundResource(R.drawable.button_left_unselected);
         closeByButton.setTextColor(getResources().getColor(R.color.text_color_grey));
