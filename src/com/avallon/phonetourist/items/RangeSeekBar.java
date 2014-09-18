@@ -38,6 +38,8 @@ public class RangeSeekBar<T extends Number> extends ImageView {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_normal);
     private final Bitmap thumbPressedImage = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_pressed);
+    private final Bitmap thumbImageRed = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_normal_red);
+    private final Bitmap thumbPressedImageRed = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_pressed_red);
     private final float thumbWidth = thumbImage.getWidth();
     private final float thumbHalfWidth = 0.5f * thumbWidth;
     private final float thumbHalfHeight = 0.5f * thumbImage.getHeight();
@@ -394,15 +396,23 @@ public class RangeSeekBar<T extends Number> extends ImageView {
         rect.left = normalizedToScreen(normalizedMinValue);
         rect.right = normalizedToScreen(normalizedMaxValue);
 
-        // orange color
+        // blue color
         paint.setColor(DEFAULT_COLOR);
+        canvas.drawRect(rect, paint);
+        
+        // draw seek bar inactive range line
+        rect.left = normalizedToScreen(0);
+        rect.right = normalizedToScreen(normalizedMinValue);
+        
+        // red color
+        paint.setColor(getResources().getColor(R.color.holo_red_light));
         canvas.drawRect(rect, paint);
 
         // draw minimum thumb
-        drawThumb(normalizedToScreen(normalizedMinValue), Thumb.MIN.equals(pressedThumb), canvas);
+        drawThumbMin(normalizedToScreen(normalizedMinValue), Thumb.MIN.equals(pressedThumb), canvas);
 
         // draw maximum thumb
-        drawThumb(normalizedToScreen(normalizedMaxValue), Thumb.MAX.equals(pressedThumb), canvas);
+        drawThumbMax(normalizedToScreen(normalizedMaxValue), Thumb.MAX.equals(pressedThumb), canvas);
     }
 
     /**
@@ -432,6 +442,21 @@ public class RangeSeekBar<T extends Number> extends ImageView {
         normalizedMinValue = bundle.getDouble("MIN");
         normalizedMaxValue = bundle.getDouble("MAX");
     }
+    
+    /**
+     * Draws the "normal" resp. "pressed" thumb image on specified x-coordinate.
+     * 
+     * @param screenCoord
+     *            The x-coordinate in screen space where to draw the image.
+     * @param pressed
+     *            Is the thumb currently in "pressed" state?
+     * @param canvas
+     *            The canvas to draw upon.
+     */
+    private void drawThumbMin(float screenCoord, boolean pressed, Canvas canvas) {
+        canvas.drawBitmap(pressed ? thumbPressedImageRed : thumbImageRed, screenCoord - thumbHalfWidth,
+                (float) ((0.5f * getHeight()) - thumbHalfHeight), paint);
+    }
 
     /**
      * Draws the "normal" resp. "pressed" thumb image on specified x-coordinate.
@@ -443,7 +468,7 @@ public class RangeSeekBar<T extends Number> extends ImageView {
      * @param canvas
      *            The canvas to draw upon.
      */
-    private void drawThumb(float screenCoord, boolean pressed, Canvas canvas) {
+    private void drawThumbMax(float screenCoord, boolean pressed, Canvas canvas) {
         canvas.drawBitmap(pressed ? thumbPressedImage : thumbImage, screenCoord - thumbHalfWidth,
                 (float) ((0.5f * getHeight()) - thumbHalfHeight), paint);
     }

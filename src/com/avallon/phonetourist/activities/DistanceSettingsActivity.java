@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class DistanceSettingsActivity extends FragmentActivity implements OnClic
 
         distanceSettingsContainer = (ViewGroup) findViewById(R.id.distance_settings_container);
 
-        seekBar = new RangeSeekBar<Integer>(1, 399, this);
+        seekBar = new RangeSeekBar<Integer>(0, 400, this);
         seekBar.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
@@ -81,22 +82,22 @@ public class DistanceSettingsActivity extends FragmentActivity implements OnClic
         if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
             fromTextView.setText(getString(R.string.from, "0"));
             upToTextView.setText(getString(R.string.up_to, "150"));
-            seekBar.setSelectedMinValue(1);
-            seekBar.setSelectedMaxValue(2);
+            seekBar.setSelectedMinValue(0);
+            seekBar.setSelectedMaxValue(3);
             minTravelDistance = 0;
             maxTravelDistance = 150;
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_FAR_AWAY)) {
             fromTextView.setText(getString(R.string.from, "150"));
             upToTextView.setText(getString(R.string.up_to, "2,000"));
-            seekBar.setSelectedMinValue(2);
-            seekBar.setSelectedMaxValue(39);
+            seekBar.setSelectedMinValue(3);
+            seekBar.setSelectedMaxValue(40);
             minTravelDistance = 150;
             maxTravelDistance = 2000;
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_WHOLE_WORLD)) {
             fromTextView.setText(getString(R.string.from, "0"));
             upToTextView.setText(getString(R.string.up_to, "20,000"));
-            seekBar.setSelectedMinValue(1);
-            seekBar.setSelectedMaxValue(399);
+            seekBar.setSelectedMinValue(0);
+            seekBar.setSelectedMaxValue(400);
             minTravelDistance = 0;
             maxTravelDistance = 20000;
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_CUSTOM)) {
@@ -220,19 +221,31 @@ public class DistanceSettingsActivity extends FragmentActivity implements OnClic
             finish();
             break;
         case R.id.from_minus_button:
+            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             seekBar.setSelectedMinValue(seekBar.getSelectedMinValue() - 1);
+            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             updateValuesAndMap();
             break;
         case R.id.from_plus_button:
-            seekBar.setSelectedMinValue(seekBar.getSelectedMinValue() + 1);
-            updateValuesAndMap();
+            if (seekBar.getSelectedMaxValue() - seekBar.getSelectedMinValue() > 1){
+                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
+                seekBar.setSelectedMinValue(seekBar.getSelectedMinValue() + 1);
+                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
+                updateValuesAndMap();
+            }
             break;
         case R.id.up_to_minus_button:
-            seekBar.setSelectedMaxValue(seekBar.getSelectedMaxValue() - 1);
-            updateValuesAndMap();
+            if (seekBar.getSelectedMaxValue() - seekBar.getSelectedMinValue() > 1) {
+                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
+                seekBar.setSelectedMaxValue(seekBar.getSelectedMaxValue() - 1);
+                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
+                updateValuesAndMap();
+            }
             break;
         case R.id.up_to_plus_button:
+            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             seekBar.setSelectedMaxValue(seekBar.getSelectedMaxValue() + 1);
+            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             updateValuesAndMap();
             break;
         default:
@@ -242,11 +255,11 @@ public class DistanceSettingsActivity extends FragmentActivity implements OnClic
 
     private void updateValuesAndMap() {
         distanceChanged = true;
-        minTravelDistance = (seekBar.getSelectedMinValue() - 1) * 50;
-        maxTravelDistance = (seekBar.getSelectedMaxValue() + 1) * 50;
+        minTravelDistance = seekBar.getSelectedMinValue() * 50;
+        maxTravelDistance = seekBar.getSelectedMaxValue() * 50;
 
-        fromTextView.setText(getString(R.string.from, Utils.formatInt((seekBar.getSelectedMinValue() - 1) * 50)));
-        upToTextView.setText(getString(R.string.up_to, Utils.formatInt((seekBar.getSelectedMaxValue() + 1) * 50)));
+        fromTextView.setText(getString(R.string.from, Utils.formatInt(seekBar.getSelectedMinValue() * 50)));
+        upToTextView.setText(getString(R.string.up_to, Utils.formatInt(seekBar.getSelectedMaxValue() * 50)));
 
         setMapCircles();
     }

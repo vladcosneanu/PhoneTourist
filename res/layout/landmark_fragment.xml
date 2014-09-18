@@ -19,7 +19,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/travel_distance_text_bg"
+                android:background="@drawable/travel_distance_text_center_bg"
                 android:orientation="vertical" >
 
                 <TextView

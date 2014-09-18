@@ -99,7 +99,7 @@ public class Utils {
 
         double foundLat = Math.toDegrees(destinationLat);
         double foundLng = Math.toDegrees(destinationLng);
-        Log.d("Vlad", foundLat + " - " + foundLng);
+        
         return new LatLng(foundLat, foundLng);
     }
 }

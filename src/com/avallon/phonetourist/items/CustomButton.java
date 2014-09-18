@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -96,8 +97,10 @@ public class CustomButton extends View {
         textPaint.setColor(Color.WHITE);
         textPaint.setTextAlign(Align.CENTER);
         textPaint.setTextSize(width * 20 / 100);
-        
-        pantheonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.parthenon);
+
+        Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        pantheonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.parthenon, options);
     }
 
     @Override
@@ -121,6 +124,7 @@ public class CustomButton extends View {
             if (previousRotationAngle <= 90) {
                 int iconWidth = pantheonIcon.getWidth();
                 int iconHeight = pantheonIcon.getHeight();
+
                 canvas.drawBitmap(pantheonIcon, (width - iconWidth) / 2, (height - iconHeight) / 2, null);
             } else {
                 canvas.drawText(getContext().getString(R.string.start), width / 2, height / 2 - textSize / 4, textPaint);

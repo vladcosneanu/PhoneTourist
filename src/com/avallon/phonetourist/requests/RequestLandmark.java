@@ -29,12 +29,14 @@ public class RequestLandmark extends AsyncTask<String, Integer, JSONObject> {
 	private String nextPageToken;
 	private double landmarkLat;
 	private double landmarkLng;
+	private float distance;
 
-	public RequestLandmark(MainActivity activity, double lat, double lng, String nextPageToken) {
+	public RequestLandmark(MainActivity activity, double lat, double lng, String nextPageToken, float distance) {
 		this.activity = activity;
 		this.landmarkLat = lat;
 		this.landmarkLng = lng;
 		this.nextPageToken = nextPageToken;
+		this.distance = distance;
 	}
 
 	@Override
@@ -47,7 +49,11 @@ public class RequestLandmark extends AsyncTask<String, Integer, JSONObject> {
     		if (nextPageToken == null) {
     		    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     	        url += "location=" + landmarkLat + "," + landmarkLng;
-    	        url += "&radius=50000";
+    	        if (distance < 50) {
+    	            url += "&radius=" + ((int) distance * 1000);
+    	        } else {
+    	            url += "&radius=50000";
+    	        }
                 url += "&types=" + URLEncoder.encode("museum|amusement_park|aquarium|art_gallery|casino|church|hindu_temple|mosque|place_of_worship|synagogue|university", "UTF-8");
     	        url += "&language=en-US";
     	        url += "&sensor=true";

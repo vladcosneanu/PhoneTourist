@@ -180,7 +180,7 @@ public class MainActivity extends FragmentActivity implements SensorEventListene
 				mTimer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						RequestLandmark requestLandmark = new RequestLandmark(MainActivity.this, 0, 0, nextPageToken);
+						RequestLandmark requestLandmark = new RequestLandmark(MainActivity.this, 0, 0, nextPageToken, 0);
 						requestLandmark.execute(new String[] {});
 					}
 				}, 2000);

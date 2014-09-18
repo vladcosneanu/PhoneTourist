@@ -77,6 +77,8 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private float[] orientationVals = new float[3];
     private float[] mRotationMatrix = new float[16];
     
+    private float distance;
+    
     /**
      * The lower this is, the greater the preference which is given to previous
      * values. (slows change)
@@ -186,7 +188,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
 
         double bearingRad = Math.toRadians(bearing);
         Log.d("Vlad", "bearing: " + bearing);
-        float distance = 0;
+        distance = 0;
         String savedDistance = PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE);
         if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
             // 0 - 150 km
@@ -199,8 +201,8 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             distance = Utils.getRandInt(50, 19950);
         } else if (savedDistance.equals(PreferenceHelper.DISTANCE_CUSTOM)) {
             // custom distance
-            int minDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN)) - 50;
-            int maxDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX)) + 50;
+            int minDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN));
+            int maxDIstance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX));
             distance = Utils.getRandInt(minDIstance, maxDIstance);
         }
         Log.d("Vlad", "distance: " + distance);
@@ -316,7 +318,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                     });
                     instructionsContainer.startAnimation(exitdown);
                     
-                    RequestLandmark requestLandmark = new RequestLandmark((MainActivity) getActivity(), landmarkLat, landmarkLng, null);
+                    RequestLandmark requestLandmark = new RequestLandmark((MainActivity) getActivity(), landmarkLat, landmarkLng, null, distance);
                     requestLandmark.execute(new String[] {});
                 }
             });
