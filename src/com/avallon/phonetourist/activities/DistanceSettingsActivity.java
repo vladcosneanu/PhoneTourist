@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -221,31 +220,23 @@ public class DistanceSettingsActivity extends FragmentActivity implements OnClic
             finish();
             break;
         case R.id.from_minus_button:
-            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             seekBar.setSelectedMinValue(seekBar.getSelectedMinValue() - 1);
-            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             updateValuesAndMap();
             break;
         case R.id.from_plus_button:
             if (seekBar.getSelectedMaxValue() - seekBar.getSelectedMinValue() > 1){
-                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
                 seekBar.setSelectedMinValue(seekBar.getSelectedMinValue() + 1);
-                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
                 updateValuesAndMap();
             }
             break;
         case R.id.up_to_minus_button:
             if (seekBar.getSelectedMaxValue() - seekBar.getSelectedMinValue() > 1) {
-                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
                 seekBar.setSelectedMaxValue(seekBar.getSelectedMaxValue() - 1);
-                Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
                 updateValuesAndMap();
             }
             break;
         case R.id.up_to_plus_button:
-            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             seekBar.setSelectedMaxValue(seekBar.getSelectedMaxValue() + 1);
-            Log.d("Vlad", seekBar.getSelectedMinValue() + " - " + seekBar.getSelectedMaxValue());
             updateValuesAndMap();
             break;
         default:

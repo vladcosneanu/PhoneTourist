@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -55,6 +56,7 @@ public class LandmarkFragment extends Fragment {
     private ImageButton landmarkDirectionsButton;
     private List<LatLng> allLocations;
     private Marker marker;
+    private ListView reviewsList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -171,6 +173,8 @@ public class LandmarkFragment extends Fragment {
                 }
             }
         });
+        
+        reviewsList = (ListView) mView.findViewById(R.id.reviews_list);
     }
 
     public void onLandmarkDirectionsReceived(JSONObject json) {

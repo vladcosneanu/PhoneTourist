@@ -63,5 +63,6 @@
     <string name="up_to">Up to: %1$s km</string>
     <string name="select">Select</string> 
     <string name="cancel">Cancel</string>
+    <string name="reviews">Reviews</string>
 
 </resources>

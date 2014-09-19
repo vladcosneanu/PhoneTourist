@@ -269,6 +269,38 @@
                     android:orientation="vertical" />
             </FrameLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/landmark_reviews_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/landmark_address_container"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/travel_distance_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/reviews_bg"
+                android:gravity="center_vertical"
+                android:text="@string/reviews"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/white" />
+
+            <ListView
+                android:id="@+id/reviews_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </RelativeLayout>
 
 </ScrollView>
