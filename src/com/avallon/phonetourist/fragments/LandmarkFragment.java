@@ -15,13 +15,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.avallon.phonetourist.R;
 import com.avallon.phonetourist.activities.MainActivity;
+import com.avallon.phonetourist.adapters.ReviewsListAdapter;
 import com.avallon.phonetourist.items.LandmarkDetails;
+import com.avallon.phonetourist.items.LandmarkReview;
 import com.avallon.phonetourist.requests.RequestLandmarkDirections;
 import com.avallon.phonetourist.utils.MapHelper;
 import com.avallon.phonetourist.utils.Utils;
@@ -57,6 +60,9 @@ public class LandmarkFragment extends Fragment {
     private List<LatLng> allLocations;
     private Marker marker;
     private ListView reviewsList;
+    private ReviewsListAdapter reviewsListAdapter;
+    private List<LandmarkReview> landmarkReviews;
+    private View landmarkReviewsContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -150,7 +156,7 @@ public class LandmarkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(currentPosition.build()));
-                
+
                 if (marker != null) {
                     marker.showInfoWindow();
                 }
@@ -173,8 +179,19 @@ public class LandmarkFragment extends Fragment {
                 }
             }
         });
-        
+
+        landmarkReviewsContainer = mView.findViewById(R.id.landmark_reviews_container);
         reviewsList = (ListView) mView.findViewById(R.id.reviews_list);
+        landmarkReviews = landmarkDetails.getLandmarkReviews();
+        if (landmarkReviews.size() > 0) {
+            landmarkReviewsContainer.setVisibility(View.VISIBLE);
+            reviewsListAdapter = new ReviewsListAdapter(getActivity(), R.layout.review_item, landmarkReviews);
+            reviewsList.setAdapter(reviewsListAdapter);
+
+            setListViewHeightBasedOnChildren(reviewsList);
+        } else {
+            landmarkReviewsContainer.setVisibility(View.GONE);
+        }
     }
 
     public void onLandmarkDirectionsReceived(JSONObject json) {
@@ -207,21 +224,41 @@ public class LandmarkFragment extends Fragment {
             e.printStackTrace();
         }
     }
-    
+
     private void addLandmarkDirections() {
         mapFragment.getView().post(new Runnable() {
             @Override
             public void run() {
                 if (allLocations.size() > 0) {
                     final LatLngBounds.Builder bc = new LatLngBounds.Builder();
-                    
+
                     for (int k = 0; k < allLocations.size(); k++) {
                         bc.include(allLocations.get(k));
                     }
-                    
+
                     map.animateCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 100));
                 }
             }
         });
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 }
