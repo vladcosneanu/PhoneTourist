@@ -23,6 +23,7 @@
             android:id="@+id/reviewer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:text="Reviewer Name"
             android:textColor="@color/text_color_dark"
             android:textSize="16sp"
@@ -52,6 +53,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="3dp"
                 android:gravity="right"
+                android:maxLines="1"
                 android:text="reviewed a year ago"
                 android:textColor="@color/text_color_grey"
                 android:textSize="16sp" />
@@ -61,8 +63,10 @@
             android:id="@+id/review_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Review Text"
+            android:ellipsize="end"
             android:maxLines="1"
+            android:scrollHorizontally="false"
+            android:text="Review Text"
             android:textColor="@color/text_color_dark"
             android:textSize="16sp" />
     </LinearLayout>
