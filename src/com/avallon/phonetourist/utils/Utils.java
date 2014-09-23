@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.avallon.phonetourist.R;
@@ -101,5 +102,11 @@ public class Utils {
         double foundLng = Math.toDegrees(destinationLng);
         
         return new LatLng(foundLat, foundLng);
+    }
+    
+    public static int dpToPx(int dp, Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+        return px;
     }
 }

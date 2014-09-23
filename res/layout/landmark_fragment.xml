@@ -300,9 +300,7 @@
                 android:id="@+id/reviews_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_center_only_unselected"
-                android:divider="@color/text_color_grey"
-                android:footerDividersEnabled="false" />
+                android:background="@drawable/button_center_only_unselected" />
         </LinearLayout>
     </RelativeLayout>
 

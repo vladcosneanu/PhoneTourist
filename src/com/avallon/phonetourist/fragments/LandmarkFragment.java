@@ -7,13 +7,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -188,7 +191,21 @@ public class LandmarkFragment extends Fragment {
             reviewsListAdapter = new ReviewsListAdapter(getActivity(), R.layout.review_item, landmarkReviews);
             reviewsList.setAdapter(reviewsListAdapter);
 
-            setListViewHeightBasedOnChildren(reviewsList);
+            // listview height must be set before resizing items
+            reviewsList.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+                @SuppressLint("NewApi")
+                @SuppressWarnings("deprecation")
+                @Override
+                public void onGlobalLayout() {
+                    setListViewHeightBasedOnChildren(reviewsList);
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        reviewsList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        reviewsList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
         } else {
             landmarkReviewsContainer.setVisibility(View.GONE);
         }
@@ -253,7 +270,21 @@ public class LandmarkFragment extends Fragment {
         for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
+
+            // measure one row
+            TextView textView = (TextView) listItem.findViewById(R.id.review_text);
+            int widthSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+            int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+            textView.measure(widthSpec, heightSpec);
+            int oneRowHeight = textView.getMeasuredHeight();
+
+            // measure the exact height that the text view needs to occupy
+            widthSpec = MeasureSpec.makeMeasureSpec(listView.getWidth() - Utils.dpToPx(20, getActivity()), MeasureSpec.EXACTLY);
+            heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+            textView.measure(widthSpec, heightSpec);
+
+            // add the additional height minus one row
+            totalHeight += listItem.getMeasuredHeight() + textView.getMeasuredHeight() - oneRowHeight;
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();

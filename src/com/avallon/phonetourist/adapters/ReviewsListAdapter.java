@@ -3,7 +3,6 @@ package com.avallon.phonetourist.adapters;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +56,13 @@ public class ReviewsListAdapter extends ArrayAdapter<LandmarkReview> {
         viewHolder.reviewerName.setText(review.getAuthorName());
         viewHolder.ratingBar.setRating((float) review.getRating());
         viewHolder.reviewDate.setText(review.getTime() + "");
-        // viewHolder.reviewText.setText(review.getText());
-        viewHolder.reviewText
-                .setText("This is a very long review text, posted by a very cool user that likes to type a lot of words. This is a very long review text, posted by a very cool user that likes to type a lot of words. This is a very long review text, posted by a very cool user that likes to type a lot of words. This is a very long review text, posted by a very cool user that likes to type a lot of words.");
+        if (review.getText().trim().length() != 0) {
+            viewHolder.reviewText.setVisibility(View.VISIBLE);
+            viewHolder.reviewText.setText(review.getText());
+        } else {
+            viewHolder.reviewText.setVisibility(View.GONE);
+        }
+
         return rowView;
     }
 
