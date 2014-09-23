@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/littlefluffylocationlibrary.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/prettytime-3.2.5.Final.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

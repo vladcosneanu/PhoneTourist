@@ -55,7 +55,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="3dp"
                     android:gravity="right"
                     android:text="reviewed a year ago"
                     android:textColor="@color/text_color_grey"

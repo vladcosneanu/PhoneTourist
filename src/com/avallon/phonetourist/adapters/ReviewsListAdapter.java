@@ -1,8 +1,12 @@
 package com.avallon.phonetourist.adapters;
 
+import java.util.Date;
 import java.util.List;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +59,10 @@ public class ReviewsListAdapter extends ArrayAdapter<LandmarkReview> {
 
         viewHolder.reviewerName.setText(review.getAuthorName());
         viewHolder.ratingBar.setRating((float) review.getRating());
-        viewHolder.reviewDate.setText(review.getTime() + "");
+        
+        PrettyTime prettyTime = new PrettyTime();
+        viewHolder.reviewDate.setText(prettyTime.format(new Date(review.getTime() * 1000)));
+        
         if (review.getText().trim().length() != 0) {
             viewHolder.reviewText.setVisibility(View.VISIBLE);
             viewHolder.reviewText.setText(review.getText());
