@@ -3,22 +3,39 @@ package com.avallon.phonetourist.items;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
+import com.avallon.phonetourist.requests.RequestReviewImage;
+import com.avallon.phonetourist.utils.Utils;
+
 public class LandmarkReview {
 
     private String authorName;
     private String authorUrl;
+    private String authorId;
     private String language;
     private double rating;
     private String text;
     private long time;
+    private String imageUrl;
+    
+    private boolean imageRequestFinished = true;
 
     public LandmarkReview(JSONObject json) {
         try {
             authorName = json.getString("author_name");
             if (json.has("author_url")) {
+                imageRequestFinished = false;
                 authorUrl = json.getString("author_url");
+                String[] split = authorUrl.split("/");
+                authorId = split[split.length - 1];
+                
+                RequestReviewImage requestReviewImage = new RequestReviewImage(this, authorId);
+                requestReviewImage.execute(new String[] {});
             } else {
+                imageRequestFinished = true;
                 authorUrl = "";
+                authorId = "";
             }
             if (json.has("language")) {
                 language = json.getString("language");
@@ -80,5 +97,41 @@ public class LandmarkReview {
 
     public void setTime(long time) {
         this.time = time;
+    }
+    
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+    
+    public void onReviewImageUrlReceived(JSONObject json, String authorId) {
+        try {
+            JSONObject image = json.getJSONObject("image");
+            imageUrl = image.getString("url");
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        imageRequestFinished = true;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public boolean isImageRequestFinished() {
+        return imageRequestFinished;
+    }
+
+    public void setImageRequestFinished(boolean imageRequestFinished) {
+        this.imageRequestFinished = imageRequestFinished;
     }
 }

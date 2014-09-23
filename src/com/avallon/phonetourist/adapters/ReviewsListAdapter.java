@@ -6,7 +6,6 @@ import java.util.List;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import android.widget.TextView;
 
 import com.avallon.phonetourist.R;
 import com.avallon.phonetourist.items.LandmarkReview;
+import com.avallon.phonetourist.utils.Utils;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 public class ReviewsListAdapter extends ArrayAdapter<LandmarkReview> {
 
@@ -59,15 +60,20 @@ public class ReviewsListAdapter extends ArrayAdapter<LandmarkReview> {
 
         viewHolder.reviewerName.setText(review.getAuthorName());
         viewHolder.ratingBar.setRating((float) review.getRating());
-        
+
         PrettyTime prettyTime = new PrettyTime();
         viewHolder.reviewDate.setText(prettyTime.format(new Date(review.getTime() * 1000)));
-        
+
         if (review.getText().trim().length() != 0) {
             viewHolder.reviewText.setVisibility(View.VISIBLE);
             viewHolder.reviewText.setText(review.getText());
         } else {
             viewHolder.reviewText.setVisibility(View.GONE);
+        }
+
+        if (review.getImageUrl() != null) {
+            String imageUrl = review.getImageUrl().replace("?sz=50", "?sz=" + String.valueOf(Utils.dpToPx(50, context)));
+            UrlImageViewHelper.setUrlDrawable(viewHolder.personImage, imageUrl, R.drawable.ic_action_person);
         }
 
         return rowView;

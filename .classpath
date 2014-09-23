@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/prettytime-3.2.5.Final.jar"/>
+	<classpathentry kind="lib" path="libs/urlimageviewhelper-1.0.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

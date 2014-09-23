@@ -21,12 +21,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
+import com.avallon.phonetourist.PhoneTouristApplication;
 import com.avallon.phonetourist.R;
 import com.avallon.phonetourist.fragments.ButtonFragment;
 import com.avallon.phonetourist.fragments.LandmarkFragment;
 import com.avallon.phonetourist.items.Coordinate;
 import com.avallon.phonetourist.items.Landmark;
 import com.avallon.phonetourist.items.LandmarkDetails;
+import com.avallon.phonetourist.items.LandmarkReview;
 import com.avallon.phonetourist.requests.RequestLandmark;
 import com.avallon.phonetourist.requests.RequestLandmarkDetails;
 import com.avallon.phonetourist.requests.RequestLandmarkDistance;

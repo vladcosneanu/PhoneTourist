@@ -19,11 +19,6 @@ import com.avallon.phonetourist.activities.MainActivity;
 
 public class RequestLandmark extends AsyncTask<String, Integer, JSONObject> {
 
-    public static final String GAS_STATION = "gas_station";
-    public static final String CAR_REPAIR = "car_repair";
-    public static final String CAR_WASH = "car_wash";
-    public static final String PARKING = "parking";
-    
 	private boolean done = false;
 	private MainActivity activity;
 	private String nextPageToken;

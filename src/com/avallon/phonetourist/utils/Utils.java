@@ -100,13 +100,13 @@ public class Utils {
 
         double foundLat = Math.toDegrees(destinationLat);
         double foundLng = Math.toDegrees(destinationLng);
-        
+
         return new LatLng(foundLat, foundLng);
     }
-    
+
     public static int dpToPx(int dp, Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
 }
