@@ -5,6 +5,25 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin" >
 
+    <RelativeLayout
+        android:id="@+id/keep_pressing_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/green_full_container_bg"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:text="@string/keep_pressing"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/distance_buttons_container"
         android:layout_width="match_parent"
@@ -21,12 +40,12 @@
             <TextView
                 android:id="@+id/travel_distance_text"
                 android:layout_width="fill_parent"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/travel_distance_text_left_bg"
+                android:gravity="center"
                 android:text="@string/travel_distance"
                 android:textColor="@android:color/white"
-                android:gravity="center"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 

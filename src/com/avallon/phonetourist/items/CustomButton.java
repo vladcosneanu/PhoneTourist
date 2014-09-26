@@ -47,6 +47,7 @@ public class CustomButton extends View {
     private Timer timer;
     private CustomButtonAnimationListener listener;
     private boolean buttonPressed = false;
+    private boolean pressingInProgress = false;
     private int colorInterpolated = 0;
     private int colorFrom = R.string.holo_blue_light;
     private int colorTo = R.string.holo_green_light;
@@ -209,6 +210,11 @@ public class CustomButton extends View {
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
             if (!buttonPressed) {
+                if (!pressingInProgress) {
+                    pressingInProgress = true;
+                    listener.onCustomButtonAnimationStart();
+                }
+
                 path.rewind();
                 path2.rewind();
                 path3.rewind();
@@ -257,6 +263,11 @@ public class CustomButton extends View {
             break;
         case MotionEvent.ACTION_UP:
             if (!buttonPressed) {
+                if (pressingInProgress) {
+                    pressingInProgress = false;
+                    listener.onCustomButtonAnimationStop();
+                }
+
                 timer.cancel();
                 timer = new Timer();
                 timer.schedule(new TimerTask() {

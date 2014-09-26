@@ -1,7 +1,5 @@
 package com.avallon.phonetourist.fragments;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,15 +68,19 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     private TextView splashTitleText;
     private Typeface customFont;
     private TextView travelDistanceText;
-    
+    private View keepPressingContainer;
+
     private static int customCompassArrowsWidth;
     private static int customCompassArrowsHeight;
     
+    private boolean ongoingAnimation = false;
+    private boolean needToDismiss = false;
+
     private float[] orientationVals = new float[3];
     private float[] mRotationMatrix = new float[16];
-    
+
     private float distance;
-    
+
     /**
      * The lower this is, the greater the preference which is given to previous
      * values. (slows change)
@@ -96,9 +98,9 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
     public void onViewCreated(View view, Bundle savedInstanceState) {
         customButton = (CustomButton) mView.findViewById(R.id.custom_button);
         customButton.setCustomButtonAnimationListener(this);
-        
+
         customCompassArrows = (CustomCompassArrows) mView.findViewById(R.id.custom_compass_arrows);
-        
+
         setCompassArrowsMeasurements();
 
         distanceButtonsContainer = mView.findViewById(R.id.distance_buttons_container);
@@ -127,47 +129,51 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         instruction3Text.setTypeface(customFont);
         splashTitleText = (TextView) mView.findViewById(R.id.splash_title_text);
         splashTitleText.setTypeface(customFont);
-        
+
+        keepPressingContainer = mView.findViewById(R.id.keep_pressing_container);
+
         if (!PhoneTouristApplication.splashDisplayed) {
-        	// display the splash screen
+            // display the splash screen
             Animation enterButtonDown = AnimationUtils.loadAnimation(getActivity(), R.anim.enter_button_down);
             enterButtonDown.setAnimationListener(new AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                 }
+
                 @Override
                 public void onAnimationRepeat(Animation animation) {
                 }
+
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     customButton.setNotInSplashScreen();
                 }
             });
-            
-        	customButton.startAnimation(enterButtonDown);
-        	customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_delay));
-        	customButton.setupForSplashScreen();
-			customButton.decolor();
-			
-			splashTitleText.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down_delay));
-        	distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_delay));
-        	instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down_delay));
-        	
-        	PhoneTouristApplication.splashDisplayed = true;
+
+            customButton.startAnimation(enterButtonDown);
+            customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_delay));
+            customButton.setupForSplashScreen();
+            customButton.decolor();
+
+            splashTitleText.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down_delay));
+            distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_delay));
+            instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down_delay));
+
+            PhoneTouristApplication.splashDisplayed = true;
         } else {
-        	// splash screen already displayed
-        	customButton.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
-        	customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
-        	distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up));
-        	instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down));
-        	splashTitleText.setVisibility(View.GONE);
+            // splash screen already displayed
+            customButton.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
+            customCompassArrows.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
+            distanceButtonsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up));
+            instructionsContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.enter_down));
+            splashTitleText.setVisibility(View.GONE);
         }
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
-        
+
         String savedDistance = PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE);
         if (savedDistance.equals(PreferenceHelper.DISTANCE_CLOSE_BY)) {
             selectCloseBy();
@@ -280,10 +286,10 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                 @Override
                 public void run() {
                     customCompassArrows.startAnimation((AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out)));
-                    
+
                     ((MainActivity) getActivity()).setIsLoading(true);
                     ((MainActivity) getActivity()).clearLandmarks();
-                    
+
                     getLocationInfo();
 
                     Animation exitUp = AnimationUtils.loadAnimation(getActivity(), R.anim.exit_up);
@@ -291,37 +297,126 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                         @Override
                         public void onAnimationStart(Animation animation) {
                         }
+
                         @Override
                         public void onAnimationRepeat(Animation animation) {
                         }
+
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            distanceButtonsContainer.setVisibility(View.GONE);
+                            keepPressingContainer.setVisibility(View.GONE);
                             displayWords = true;
                             measureWordCloudContainers();
                         }
                     });
-                    distanceButtonsContainer.startAnimation(exitUp);
+                    keepPressingContainer.startAnimation(exitUp);
 
                     Animation exitdown = AnimationUtils.loadAnimation(getActivity(), R.anim.exit_down);
                     exitdown.setAnimationListener(new AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {
                         }
+
                         @Override
                         public void onAnimationRepeat(Animation animation) {
                         }
+
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             instructionsContainer.setVisibility(View.GONE);
                         }
                     });
                     instructionsContainer.startAnimation(exitdown);
-                    
-                    RequestLandmark requestLandmark = new RequestLandmark((MainActivity) getActivity(), landmarkLat, landmarkLng, null, distance);
+
+                    RequestLandmark requestLandmark = new RequestLandmark((MainActivity) getActivity(), landmarkLat, landmarkLng, null,
+                            distance);
                     requestLandmark.execute(new String[] {});
                 }
             });
+        }
+    }
+
+    @Override
+    public void onCustomButtonAnimationStart() {
+        Animation enterUp = AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_fast);
+        enterUp.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                ongoingAnimation = true;
+                keepPressingContainer.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                ongoingAnimation = false;
+            }
+        });
+        Animation exitUp = AnimationUtils.loadAnimation(getActivity(), R.anim.exit_up_fast);
+        exitUp.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                ongoingAnimation = true;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                distanceButtonsContainer.setVisibility(View.GONE);
+                ongoingAnimation = false;
+                if (needToDismiss) {
+                    needToDismiss = false;
+                    onCustomButtonAnimationStop();
+                }
+            }
+        });
+        keepPressingContainer.startAnimation(enterUp);
+        distanceButtonsContainer.startAnimation(exitUp);
+    }
+
+    @Override
+    public void onCustomButtonAnimationStop() {
+        if (!ongoingAnimation) {
+            Animation enterUp = AnimationUtils.loadAnimation(getActivity(), R.anim.enter_up_fast_delay);
+            enterUp.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    distanceButtonsContainer.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                }
+            });
+            Animation exitUp = AnimationUtils.loadAnimation(getActivity(), R.anim.exit_up_fast_delay);
+            exitUp.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    keepPressingContainer.setVisibility(View.GONE);
+                }
+            });
+            keepPressingContainer.startAnimation(exitUp);
+            distanceButtonsContainer.startAnimation(enterUp);
+        } else {
+            needToDismiss = true;
         }
     }
 
@@ -344,7 +439,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                         if (getActivity() == null) {
                             return;
                         }
-                        
+
                         final TextView textView = new TextView(getActivity());
                         textView.setText(Utils.getTravelPhrase(getActivity()));
                         textView.setTextSize(20);
@@ -359,7 +454,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                         textView.setLayoutParams(params);
 
                         wordCloudAbove.addView(textView);
-                        
+
                         Animation wordAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.word_fade);
                         wordAnimation.setAnimationListener(new AnimationListener() {
                             @Override
@@ -401,7 +496,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                         if (getActivity() == null) {
                             return;
                         }
-                        
+
                         final TextView textView = new TextView(getActivity());
                         textView.setText(Utils.getTravelPhrase(getActivity()));
                         textView.setTextSize(20);
@@ -416,7 +511,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                         textView.setLayoutParams(params);
 
                         wordCloudBelow.addView(textView);
-                        
+
                         Animation wordAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.word_fade);
                         wordAnimation.setAnimationListener(new AnimationListener() {
                             @Override
@@ -448,17 +543,17 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             currentValsDegrees[0] = (float) (Math.toDegrees(currentVals[0]) + 360) % 360;
             currentValsDegrees[1] = (float) (Math.toDegrees(currentVals[1]) + 360) % 360;
             currentValsDegrees[2] = (float) (Math.toDegrees(currentVals[2]) + 360) % 360;
-            
+
             orientationVals[0] = currentValsDegrees[0] * filteringFactor + orientationVals[0] * (1.0f - filteringFactor);
             orientationVals[1] = currentValsDegrees[1] * filteringFactor + orientationVals[1] * (1.0f - filteringFactor);
             orientationVals[2] = currentValsDegrees[2] * filteringFactor + orientationVals[2] * (1.0f - filteringFactor);
-            
+
             float receivedBearing = orientationVals[0];
-            
+
             if (this.bearing == 0) {
                 this.bearing = receivedBearing;
             }
-            
+
             boolean degreesAdded = false;
             if (this.bearing - receivedBearing > 90) {
                 receivedBearing += 360;
@@ -466,14 +561,14 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             } else if (receivedBearing - this.bearing > 90) {
                 this.bearing += 360;
             }
-            
-            customCompassArrows.setPivotX(customCompassArrowsWidth/2);
-            customCompassArrows.setPivotY(customCompassArrowsHeight/2);
+
+            customCompassArrows.setPivotX(customCompassArrowsWidth / 2);
+            customCompassArrows.setPivotY(customCompassArrowsHeight / 2);
             customCompassArrows.setRotation(-bearing);
             if (degreesAdded) {
                 receivedBearing -= 360;
             }
-            
+
             this.bearing = receivedBearing;
         }
     }
@@ -500,7 +595,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
             break;
         }
     }
-    
+
     private void openDistanceSettingsActivity() {
         Intent intent = new Intent(getActivity(), DistanceSettingsActivity.class);
         startActivity(intent);
@@ -535,16 +630,16 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         wholeWorldButton.setBackgroundResource(R.drawable.button_right_selected);
         wholeWorldButton.setTextColor(getResources().getColor(android.R.color.white));
     }
-    
+
     private void selectCustomTravelDistance() {
         int minDistance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MIN));
         int maxDistance = Integer.parseInt(PreferenceHelper.loadValue(getActivity(), PreferenceHelper.DISTANCE_CUSTOM_MAX));
-        
+
         String minDistanceValue = Utils.formatInt(minDistance);
         String maxDistanceValue = Utils.formatInt(maxDistance);
-        
-        travelDistanceText.setText(getString(R.string.travel_distance, minDistanceValue + "-" + maxDistanceValue +" km"));
-        
+
+        travelDistanceText.setText(getString(R.string.travel_distance, minDistanceValue + "-" + maxDistanceValue + " km"));
+
         closeByButton.setBackgroundResource(R.drawable.button_left_unselected);
         closeByButton.setTextColor(getResources().getColor(R.color.text_color_grey));
         farAwayButton.setBackgroundResource(R.drawable.button_center_unselected);
@@ -552,7 +647,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
         wholeWorldButton.setBackgroundResource(R.drawable.button_right_unselected);
         wholeWorldButton.setTextColor(getResources().getColor(R.color.text_color_grey));
     }
-    
+
     private void setCompassArrowsMeasurements() {
         if (customCompassArrows != null) {
             customCompassArrows.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -562,7 +657,7 @@ public class ButtonFragment extends Fragment implements OnClickListener, CustomB
                 public void onGlobalLayout() {
                     customCompassArrowsWidth = customCompassArrows.getWidth();
                     customCompassArrowsHeight = customCompassArrows.getHeight();
-                    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                         customCompassArrows.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } else {
                         customCompassArrows.getViewTreeObserver().removeGlobalOnLayoutListener(this);

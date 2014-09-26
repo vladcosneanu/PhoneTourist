@@ -64,5 +64,7 @@
     <string name="select">Select</string> 
     <string name="cancel">Cancel</string>
     <string name="reviews">Reviews</string>
+    <string name="keep_pressing">HOLD TO START TOUR</string>
+    <string name="keep_presing_delay">1200</string>
 
 </resources>
